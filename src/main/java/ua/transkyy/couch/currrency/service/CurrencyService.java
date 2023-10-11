@@ -21,6 +21,10 @@ public class CurrencyService {
         return now.format(formatter);
     }
 
+    public String convertDateTime(String exchangeDate) {
+        return exchangeDate;
+    }
+
     public CurrencyRate getCurrencyData(ResponseEntity response) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree((JsonParser) response.getBody());

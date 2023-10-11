@@ -29,19 +29,22 @@ public class CurrencyConvertController {
     @GetMapping("/convert")
     public String convert(
             @RequestParam(name = "in") String currencyIn,
-            @RequestParam(name = "out") String currencyOut
+            @RequestParam(name = "out") String currencyOut,
+            @RequestParam(name = "date", required = false) String exchangeDate
     ) throws IOException {
 
-        String formattedDate = currencyService.convertDateTime();
+        if(exchangeDate == null) {
+            exchangeDate = currencyService.convertDateTime();
+        }
 
         ResponseEntity<String> responseIn = restTemplate.exchange(
-                BASE_URL + "valcode=" + currencyIn + "&json&date=" + formattedDate,
+                BASE_URL + "valcode=" + currencyIn + "&json&date=" + exchangeDate,
                 HttpMethod.GET,
                 null,
                 String.class
         );
         ResponseEntity<String> responseOut = restTemplate.exchange(
-                BASE_URL + "valcode=" + currencyOut + "&json&date=" + formattedDate,
+                BASE_URL + "valcode=" + currencyOut + "&json&date=" + exchangeDate,
                 HttpMethod.GET,
                 null,
                 String.class
@@ -49,13 +52,13 @@ public class CurrencyConvertController {
 
         if(responseIn.getStatusCode() == HttpStatus.OK) {
 
-            CurrencyRate currencyRateIn = currencyService.getCurrencyData(responseIn);
+//            CurrencyRate currencyRateIn = currencyService.getCurrencyData(responseIn);
 
 
 
-            return responseOut.getBody();
+            return responseIn.getBody();
         }else {
-            return "Error " + responseOut.getStatusCode();
+            return "Error " + responseIn.getStatusCode();
         }
 
 
